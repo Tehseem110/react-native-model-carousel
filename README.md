@@ -2,6 +2,22 @@
 
 A React Native library for rendering interactive 3D `.glb`/`.gltf` models in a simple swipe-free carousel with previous/next controls.
 
+## Preview
+
+<p align="center">
+  <img
+    src="./example/assets/Preview%20GIF/PreviewGif.gif"
+    alt="Carousel Preview GIF"
+    width="760"
+  />
+</p>
+
+<p align="center">
+  <img src="./example/assets/Preview%20Image/img1.png" alt="Preview 1" width="240" />
+  <img src="./example/assets/Preview%20Image/img2.png" alt="Preview 2" width="240" />
+  <img src="./example/assets/Preview%20Image/img3.png" alt="Preview 3" width="240" />
+</p>
+
 ## Installation
 
 ```sh
