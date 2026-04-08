@@ -14,6 +14,7 @@ If you use Expo, also install `expo-gl`.
 
 ```tsx
 import { ModelCarousel } from 'react-native-model-carousel';
+import { Pressable, Text } from 'react-native';
 
 import Car1 from './assets/Car1.glb';
 import Car2 from './assets/Car2.glb';
@@ -46,6 +47,16 @@ export default function App() {
       autoRotate
       autoRotateSpeed={5}
       containerStyle={{ backgroundColor: '#f0f0f0' }}
+      renderPrevButton={({ onPress, disabled }) => (
+        <Pressable onPress={onPress} disabled={disabled}>
+          <Text>Prev</Text>
+        </Pressable>
+      )}
+      renderNextButton={({ onPress, disabled }) => (
+        <Pressable onPress={onPress} disabled={disabled}>
+          <Text>Next</Text>
+        </Pressable>
+      )}
     />
   );
 }
@@ -69,18 +80,20 @@ declare module '*.gltf' {
 
 ## Props
 
-| Prop              | Type                   | Default        | Description                                        |
-| ----------------- | ---------------------- | -------------- | -------------------------------------------------- |
-| `models`          | `ModelCarouselItem[]`  | -              | Array of model assets or per-model config objects. |
-| `width`           | `DimensionValue`       | `'100%'`       | Carousel container width.                          |
-| `height`          | `DimensionValue`       | `'100%'`       | Carousel container height.                         |
-| `containerStyle`  | `StyleProp<ViewStyle>` | `undefined`    | Additional wrapper style.                          |
-| `scale`           | `number`               | `0.8`          | Model scale.                                       |
-| `position`        | `number[]`             | `[0, -2.7, 0]` | Model XYZ position.                                |
-| `cameraPosition`  | `number[]`             | `[0, 9, 5]`    | Camera XYZ position.                               |
-| `fov`             | `number`               | `35`           | Camera field of view.                              |
-| `autoRotate`      | `boolean`              | `true`         | Enables model auto-rotation.                       |
-| `autoRotateSpeed` | `number`               | `10`           | Auto-rotation speed.                               |
+| Prop               | Type                   | Default        | Description                                        |
+| ------------------ | ---------------------- | -------------- | -------------------------------------------------- |
+| `models`           | `ModelCarouselItem[]`  | -              | Array of model assets or per-model config objects. |
+| `width`            | `DimensionValue`       | `'100%'`       | Carousel container width.                          |
+| `height`           | `DimensionValue`       | `'100%'`       | Carousel container height.                         |
+| `containerStyle`   | `StyleProp<ViewStyle>` | `undefined`    | Additional wrapper style.                          |
+| `scale`            | `number`               | `0.8`          | Model scale.                                       |
+| `position`         | `number[]`             | `[0, -2.7, 0]` | Model XYZ position.                                |
+| `cameraPosition`   | `number[]`             | `[0, 9, 5]`    | Camera XYZ position.                               |
+| `fov`              | `number`               | `35`           | Camera field of view.                              |
+| `autoRotate`       | `boolean`              | `true`         | Enables model auto-rotation.                       |
+| `autoRotateSpeed`  | `number`               | `10`           | Auto-rotation speed.                               |
+| `renderPrevButton` | `(props) => ReactNode` | `undefined`    | Custom previous button renderer.                   |
+| `renderNextButton` | `(props) => ReactNode` | `undefined`    | Custom next button renderer.                       |
 
 `ModelCarouselItem` can be either:
 
@@ -96,6 +109,18 @@ type ModelCarouselItem =
 ```
 
 When a model item includes `scale`, `position`, or `cameraPosition`, those values override the global props for that specific model only.
+
+`renderPrevButton` and `renderNextButton` receive:
+
+```ts
+type NavigationButtonRenderProps = {
+  onPress: () => void;
+  disabled: boolean;
+  index: number;
+  total: number;
+  isAnimating: boolean;
+};
+```
 
 ## Contributing
 

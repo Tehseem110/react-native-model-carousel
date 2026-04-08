@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
 import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
 import type { DimensionValue, StyleProp, ViewStyle } from 'react-native';
 import { useGLTF } from '@react-three/drei/native';
@@ -12,6 +13,14 @@ export type ModelCarouselConfiguredItem = {
 };
 
 export type ModelCarouselItem = unknown | ModelCarouselConfiguredItem;
+
+export type NavigationButtonRenderProps = {
+  onPress: () => void;
+  disabled: boolean;
+  index: number;
+  total: number;
+  isAnimating: boolean;
+};
 
 type Props = {
   models: ModelCarouselItem[];
@@ -36,6 +45,10 @@ type Props = {
   // transition
   transitionDuration?: number;
   transitionScale?: number;
+
+  // custom controls
+  renderPrevButton?: (props: NavigationButtonRenderProps) => ReactNode;
+  renderNextButton?: (props: NavigationButtonRenderProps) => ReactNode;
 };
 
 const isConfiguredModel = (
@@ -70,6 +83,8 @@ const ModelCarousel = ({
 
   transitionDuration = 260,
   transitionScale = 0.96,
+  renderPrevButton,
+  renderNextButton,
 }: Props) => {
   const [index, setIndex] = useState(0);
   const fade = useRef(new Animated.Value(1)).current;
@@ -155,6 +170,14 @@ const ModelCarousel = ({
     () => [{ width, height }, containerStyle],
     [containerStyle, height, width]
   );
+  const controlsDisabled = models.length <= 1;
+  const controlsProps: NavigationButtonRenderProps = {
+    onPress: () => undefined,
+    disabled: controlsDisabled,
+    index,
+    total: models.length,
+    isAnimating: isAnimating.current,
+  };
 
   if (models.length === 0) {
     return <View style={wrapperStyle} />;
@@ -198,13 +221,43 @@ const ModelCarousel = ({
       </Animated.View>
 
       <View style={styles.controls}>
-        <Pressable onPress={prev}>
-          <Text style={styles.arrow}>{'<'}</Text>
-        </Pressable>
+        {renderPrevButton ? (
+          renderPrevButton({
+            ...controlsProps,
+            onPress: prev,
+          })
+        ) : (
+          <Pressable
+            onPress={prev}
+            disabled={controlsDisabled}
+            style={({ pressed }) => [
+              styles.navButton,
+              pressed && styles.navButtonPressed,
+              controlsDisabled && styles.navButtonDisabled,
+            ]}
+          >
+            <Text style={styles.arrow}>{'‹'}</Text>
+          </Pressable>
+        )}
 
-        <Pressable onPress={next}>
-          <Text style={styles.arrow}>{'>'}</Text>
-        </Pressable>
+        {renderNextButton ? (
+          renderNextButton({
+            ...controlsProps,
+            onPress: next,
+          })
+        ) : (
+          <Pressable
+            onPress={next}
+            disabled={controlsDisabled}
+            style={({ pressed }) => [
+              styles.navButton,
+              pressed && styles.navButtonPressed,
+              controlsDisabled && styles.navButtonDisabled,
+            ]}
+          >
+            <Text style={styles.arrow}>{'›'}</Text>
+          </Pressable>
+        )}
       </View>
     </View>
   );
@@ -223,7 +276,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   arrow: {
-    fontSize: 30,
+    fontSize: 28,
+    color: '#fff',
+    fontWeight: '700',
+    textAlign: 'center',
+    lineHeight: 30,
+  },
+  navButton: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: 'rgba(21, 29, 44, 0.75)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  navButtonPressed: {
+    opacity: 0.75,
+    transform: [{ scale: 0.96 }],
+  },
+  navButtonDisabled: {
+    opacity: 0.5,
   },
 });
 
