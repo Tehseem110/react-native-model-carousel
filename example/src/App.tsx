@@ -1,15 +1,34 @@
 import { ModelCarousel } from 'react-native-model-carousel';
 import C1 from '../assets/3dFile/C1_JPG_Compressed.glb';
-import C2 from '../assets/3dFile/C2_JPG_Compressed.glb';
-import C3 from '../assets/3dFile/C3_New.glb';
+import Werewolf from '../assets/3dFile/werewolf.glb';
+import Dog from '../assets/3dFile/dog.glb';
 
 export default function App() {
   return (
     <ModelCarousel
-      models={[C1, C2, C3]}
+      models={[
+        {
+          path: C1,
+          scale: 0.6,
+          position: [0, -2, 0],
+          cameraPosition: [0, 8, 6],
+        },
+        {
+          path: Werewolf,
+          scale: 2,
+          position: [0, 0.3, 0],
+          cameraPosition: [0, 3.5, 4.5],
+        },
+        {
+          path: Dog,
+          scale: 1.4,
+          position: [0, -0.6, 0],
+          cameraPosition: [0, 5, 6],
+        },
+      ]}
       width="100%"
       height="100%"
-      scale={1.5}
+      scale={0.8}
       position={[0, -3, 0]}
       cameraPosition={[0, 8, 6]}
       fov={40}

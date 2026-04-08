@@ -22,10 +22,24 @@ import Car3 from './assets/Car3.glb';
 export default function App() {
   return (
     <ModelCarousel
-      models={[Car1, Car2, Car3]}
-      width='100%'
-      height='100%'
-      scale={1.5}
+      models={[
+        {
+          path: Car1,
+          scale: 1.1,
+          position: [0, -3, 0],
+          cameraPosition: [0, 7, 6],
+        },
+        {
+          path: Car2,
+          scale: 1.5,
+          position: [0, -2.4, 0],
+          cameraPosition: [0, 6, 5],
+        },
+        Car3,
+      ]}
+      width="100%"
+      height="100%"
+      scale={1.3}
       position={[0, -3, 0]}
       cameraPosition={[0, 8, 6]}
       fov={40}
@@ -55,18 +69,33 @@ declare module '*.gltf' {
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `models` | `unknown[]` | - | Array of imported model assets (`.glb`/`.gltf`). |
-| `width` | `DimensionValue` | `'100%'` | Carousel container width. |
-| `height` | `DimensionValue` | `'100%'` | Carousel container height. |
-| `containerStyle` | `StyleProp<ViewStyle>` | `undefined` | Additional wrapper style. |
-| `scale` | `number` | `0.8` | Model scale. |
-| `position` | `number[]` | `[0, -2.7, 0]` | Model XYZ position. |
-| `cameraPosition` | `number[]` | `[0, 9, 5]` | Camera XYZ position. |
-| `fov` | `number` | `35` | Camera field of view. |
-| `autoRotate` | `boolean` | `true` | Enables model auto-rotation. |
-| `autoRotateSpeed` | `number` | `10` | Auto-rotation speed. |
+| Prop              | Type                   | Default        | Description                                        |
+| ----------------- | ---------------------- | -------------- | -------------------------------------------------- |
+| `models`          | `ModelCarouselItem[]`  | -              | Array of model assets or per-model config objects. |
+| `width`           | `DimensionValue`       | `'100%'`       | Carousel container width.                          |
+| `height`          | `DimensionValue`       | `'100%'`       | Carousel container height.                         |
+| `containerStyle`  | `StyleProp<ViewStyle>` | `undefined`    | Additional wrapper style.                          |
+| `scale`           | `number`               | `0.8`          | Model scale.                                       |
+| `position`        | `number[]`             | `[0, -2.7, 0]` | Model XYZ position.                                |
+| `cameraPosition`  | `number[]`             | `[0, 9, 5]`    | Camera XYZ position.                               |
+| `fov`             | `number`               | `35`           | Camera field of view.                              |
+| `autoRotate`      | `boolean`              | `true`         | Enables model auto-rotation.                       |
+| `autoRotateSpeed` | `number`               | `10`           | Auto-rotation speed.                               |
+
+`ModelCarouselItem` can be either:
+
+```ts
+type ModelCarouselItem =
+  | unknown
+  | {
+      path: unknown;
+      scale?: number;
+      position?: number[];
+      cameraPosition?: number[];
+    };
+```
+
+When a model item includes `scale`, `position`, or `cameraPosition`, those values override the global props for that specific model only.
 
 ## Contributing
 

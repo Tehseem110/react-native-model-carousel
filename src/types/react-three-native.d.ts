@@ -16,5 +16,6 @@ declare module '@react-three/drei/native' {
 
   export namespace useGLTF {
     function clear(path: string): void;
+    function preload(path: string): void;
   }
 }

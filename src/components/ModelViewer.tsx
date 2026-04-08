@@ -4,7 +4,6 @@ import { OrbitControls } from '@react-three/drei/native';
 import { useModelLoader } from '../hooks/useModelLoader';
 
 type Props = {
-  Model: any;
   modelPath: unknown;
   scale?: number;
   position?: number[];
