@@ -4,13 +4,14 @@ const { withMetroConfig } = require('react-native-monorepo-config');
 
 const root = path.resolve(__dirname, '..');
 
+const defaultConfig = getDefaultConfig(__dirname);
+
 /**
- * Metro configuration
- * https://facebook.github.io/metro/docs/configuration
- *
- * @type {import('metro-config').MetroConfig}
+ * 👇 IMPORTANT: add glb/gltf support
  */
-const config = withMetroConfig(getDefaultConfig(__dirname), {
+defaultConfig.resolver.assetExts.push('glb', 'gltf');
+
+const config = withMetroConfig(defaultConfig, {
   root,
   dirname: __dirname,
 });
