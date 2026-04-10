@@ -1,4 +1,4 @@
-import { ModelCarousel } from 'react-native-model-carousel';
+import { ModelCarousel } from 'react-native-3d-carousel';
 import C1 from '../assets/3dFile/C1_JPG_Compressed.glb';
 import Werewolf from '../assets/3dFile/werewolf.glb';
 import Dog from '../assets/3dFile/dog.glb';

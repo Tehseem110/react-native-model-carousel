@@ -2,7 +2,7 @@
   "compilerOptions": {
     "rootDir": ".",
     "paths": {
-      "react-native-model-carousel": ["./src/index"]
+      "react-native-3d-carousel": ["./src/index"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,

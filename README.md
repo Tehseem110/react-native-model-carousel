@@ -1,4 +1,4 @@
-# react-native-model-carousel
+# react-native-3d-carousel
 
 A React Native library for rendering interactive 3D `.glb`/`.gltf` models in a simple carousel with previous/next controls and optional swipe navigation.
 
@@ -26,7 +26,7 @@ A React Native library for rendering interactive 3D `.glb`/`.gltf` models in a s
 ## Installation
 
 ```sh
-npm install react-native-model-carousel @react-three/fiber @react-three/drei three
+npm install react-native-3d-carousel @react-three/fiber @react-three/drei three
 ```
 
 If you use Expo, also install `expo-gl`.
@@ -34,7 +34,7 @@ If you use Expo, also install `expo-gl`.
 ## Usage
 
 ```tsx
-import { ModelCarousel } from 'react-native-model-carousel';
+import { ModelCarousel } from 'react-native-3d-carousel';
 import { Pressable, Text } from 'react-native';
 
 import Car1 from './assets/Car1.glb';
