@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
 import type { DimensionValue, StyleProp, ViewStyle } from 'react-native';
@@ -41,6 +41,12 @@ type Props = {
   // controls
   autoRotate?: boolean;
   autoRotateSpeed?: number;
+  autoPlay?: boolean;
+  autoPlayInterval?: number;
+  enableSwipeNavigation?: boolean;
+  swipeThreshold?: number;
+  showPaginationDots?: boolean;
+  showDefaultButtons?: boolean;
 
   // transition
   transitionDuration?: number;
@@ -80,6 +86,12 @@ const ModelCarousel = ({
 
   autoRotate,
   autoRotateSpeed,
+  autoPlay = false,
+  autoPlayInterval = 2500,
+  enableSwipeNavigation = true,
+  swipeThreshold = 36,
+  showPaginationDots = true,
+  showDefaultButtons = false,
 
   transitionDuration = 260,
   transitionScale = 0.96,
@@ -90,6 +102,8 @@ const ModelCarousel = ({
   const fade = useRef(new Animated.Value(1)).current;
   const zoom = useRef(new Animated.Value(1)).current;
   const isAnimating = useRef(false);
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
 
   useEffect(() => {
     if (models.length === 0) {
@@ -108,45 +122,63 @@ const ModelCarousel = ({
     });
   }, [models]);
 
-  const runTransition = (nextIndex: number) => {
-    if (isAnimating.current || models.length <= 1) {
-      return;
-    }
+  const runTransition = useCallback(
+    (nextIndex: number) => {
+      if (isAnimating.current || models.length <= 1) {
+        return;
+      }
 
-    isAnimating.current = true;
-
-    Animated.parallel([
-      Animated.timing(fade, {
-        toValue: 0,
-        duration: Math.round(transitionDuration * 0.45),
-        useNativeDriver: true,
-      }),
-      Animated.timing(zoom, {
-        toValue: transitionScale,
-        duration: Math.round(transitionDuration * 0.45),
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
-      setIndex(nextIndex);
-      fade.setValue(0);
-      zoom.setValue(transitionScale);
+      isAnimating.current = true;
 
       Animated.parallel([
         Animated.timing(fade, {
-          toValue: 1,
-          duration: Math.round(transitionDuration * 0.55),
+          toValue: 0,
+          duration: Math.round(transitionDuration * 0.45),
           useNativeDriver: true,
         }),
         Animated.timing(zoom, {
-          toValue: 1,
-          duration: Math.round(transitionDuration * 0.55),
+          toValue: transitionScale,
+          duration: Math.round(transitionDuration * 0.45),
           useNativeDriver: true,
         }),
       ]).start(() => {
-        isAnimating.current = false;
+        setIndex(nextIndex);
+        fade.setValue(0);
+        zoom.setValue(transitionScale);
+
+        Animated.parallel([
+          Animated.timing(fade, {
+            toValue: 1,
+            duration: Math.round(transitionDuration * 0.55),
+            useNativeDriver: true,
+          }),
+          Animated.timing(zoom, {
+            toValue: 1,
+            duration: Math.round(transitionDuration * 0.55),
+            useNativeDriver: true,
+          }),
+        ]).start(() => {
+          isAnimating.current = false;
+        });
       });
-    });
-  };
+    },
+    [fade, models.length, transitionDuration, transitionScale, zoom]
+  );
+
+  useEffect(() => {
+    if (!autoPlay || models.length <= 1) {
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      const nextIndex = (index + 1) % models.length;
+      runTransition(nextIndex);
+    }, autoPlayInterval);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [autoPlay, autoPlayInterval, index, models.length, runTransition]);
 
   const next = () => {
     if (models.length === 0) {
@@ -164,6 +196,49 @@ const ModelCarousel = ({
 
     const nextIndex = (index - 1 + models.length) % models.length;
     runTransition(nextIndex);
+  };
+
+  const onViewerTouchStart = (event: {
+    nativeEvent: { pageX: number; pageY: number };
+  }) => {
+    if (!enableSwipeNavigation) {
+      return;
+    }
+
+    touchStartX.current = event.nativeEvent.pageX;
+    touchStartY.current = event.nativeEvent.pageY;
+  };
+
+  const onViewerTouchEnd = (event: {
+    nativeEvent: { pageX: number; pageY: number };
+  }) => {
+    if (
+      !enableSwipeNavigation ||
+      touchStartX.current === null ||
+      touchStartY.current === null
+    ) {
+      return;
+    }
+
+    const deltaX = event.nativeEvent.pageX - touchStartX.current;
+    const deltaY = event.nativeEvent.pageY - touchStartY.current;
+
+    touchStartX.current = null;
+    touchStartY.current = null;
+
+    if (
+      Math.abs(deltaX) < swipeThreshold ||
+      Math.abs(deltaX) <= Math.abs(deltaY)
+    ) {
+      return;
+    }
+
+    if (deltaX < 0) {
+      next();
+      return;
+    }
+
+    prev();
   };
 
   const wrapperStyle = useMemo(
@@ -197,10 +272,14 @@ const ModelCarousel = ({
     isConfiguredModel(activeItem) ? activeItem.cameraPosition : undefined,
     cameraPosition
   );
+  const shouldRenderPrevButton = !!renderPrevButton || showDefaultButtons;
+  const shouldRenderNextButton = !!renderNextButton || showDefaultButtons;
 
   return (
     <View style={wrapperStyle}>
       <Animated.View
+        onTouchStart={onViewerTouchStart}
+        onTouchEnd={onViewerTouchEnd}
         style={[
           styles.viewer,
           {
@@ -217,47 +296,69 @@ const ModelCarousel = ({
           fov={fov}
           autoRotate={autoRotate}
           autoRotateSpeed={autoRotateSpeed}
+          enablePan={!enableSwipeNavigation}
         />
       </Animated.View>
 
       <View style={styles.controls}>
-        {renderPrevButton ? (
-          renderPrevButton({
-            ...controlsProps,
-            onPress: prev,
-          })
-        ) : (
-          <Pressable
-            onPress={prev}
-            disabled={controlsDisabled}
-            style={({ pressed }) => [
-              styles.navButton,
-              pressed && styles.navButtonPressed,
-              controlsDisabled && styles.navButtonDisabled,
-            ]}
-          >
-            <Text style={styles.arrow}>{'‹'}</Text>
-          </Pressable>
-        )}
+        <View style={styles.buttonsRow}>
+          {shouldRenderPrevButton ? (
+            renderPrevButton ? (
+              renderPrevButton({
+                ...controlsProps,
+                onPress: prev,
+              })
+            ) : (
+              <Pressable
+                onPress={prev}
+                disabled={controlsDisabled}
+                style={({ pressed }) => [
+                  styles.navButton,
+                  pressed && styles.navButtonPressed,
+                  controlsDisabled && styles.navButtonDisabled,
+                ]}
+              >
+                <Text style={styles.arrow}>{'<'}</Text>
+              </Pressable>
+            )
+          ) : (
+            <View />
+          )}
 
-        {renderNextButton ? (
-          renderNextButton({
-            ...controlsProps,
-            onPress: next,
-          })
-        ) : (
-          <Pressable
-            onPress={next}
-            disabled={controlsDisabled}
-            style={({ pressed }) => [
-              styles.navButton,
-              pressed && styles.navButtonPressed,
-              controlsDisabled && styles.navButtonDisabled,
-            ]}
-          >
-            <Text style={styles.arrow}>{'›'}</Text>
-          </Pressable>
-        )}
+          {shouldRenderNextButton ? (
+            renderNextButton ? (
+              renderNextButton({
+                ...controlsProps,
+                onPress: next,
+              })
+            ) : (
+              <Pressable
+                onPress={next}
+                disabled={controlsDisabled}
+                style={({ pressed }) => [
+                  styles.navButton,
+                  pressed && styles.navButtonPressed,
+                  controlsDisabled && styles.navButtonDisabled,
+                ]}
+              >
+                <Text style={styles.arrow}>{'>'}</Text>
+              </Pressable>
+            )
+          ) : (
+            <View />
+          )}
+        </View>
+
+        {showPaginationDots && models.length > 0 ? (
+          <View style={styles.dotsContainer}>
+            {models.map((_, modelIndex) => (
+              <View
+                key={`dot-${modelIndex}`}
+                style={[styles.dot, modelIndex === index && styles.dotActive]}
+              />
+            ))}
+          </View>
+        ) : null}
       </View>
     </View>
   );
@@ -269,11 +370,32 @@ const styles = StyleSheet.create({
   },
   controls: {
     position: 'absolute',
-    bottom: 40,
+    bottom: 24,
     width: '100%',
+    gap: 12,
+  },
+  buttonsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
+  },
+  dotsContainer: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: 'rgba(196, 37, 37, 0.45)',
+  },
+  dotActive: {
+    width: 18,
+    borderRadius: 6,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
   },
   arrow: {
     fontSize: 28,

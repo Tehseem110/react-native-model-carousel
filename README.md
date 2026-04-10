@@ -1,6 +1,6 @@
 # react-native-model-carousel
 
-A React Native library for rendering interactive 3D `.glb`/`.gltf` models in a simple swipe-free carousel with previous/next controls.
+A React Native library for rendering interactive 3D `.glb`/`.gltf` models in a simple carousel with previous/next controls and optional swipe navigation.
 
 ## Preview
 
@@ -62,6 +62,8 @@ export default function App() {
       fov={40}
       autoRotate
       autoRotateSpeed={5}
+      autoPlay
+      autoPlayInterval={3000}
       containerStyle={{ backgroundColor: '#f0f0f0' }}
       renderPrevButton={({ onPress, disabled }) => (
         <Pressable onPress={onPress} disabled={disabled}>
@@ -108,6 +110,12 @@ declare module '*.gltf' {
 | `fov`              | `number`               | `35`           | Camera field of view.                              |
 | `autoRotate`       | `boolean`              | `true`         | Enables model auto-rotation.                       |
 | `autoRotateSpeed`  | `number`               | `10`           | Auto-rotation speed.                               |
+| `autoPlay`         | `boolean`              | `false`        | Automatically advances to the next model in an infinite loop. |
+| `autoPlayInterval` | `number`               | `2500`         | Delay in milliseconds between each automatic model change. |
+| `enableSwipeNavigation` | `boolean`         | `true`         | Enables horizontal swipe to switch models and disables model panning. |
+| `swipeThreshold`   | `number`               | `36`           | Minimum horizontal drag distance (px) required to trigger swipe navigation. |
+| `showPaginationDots` | `boolean`            | `true`         | Shows bottom dots indicating total models and current active model. |
+| `showDefaultButtons` | `boolean`            | `false`        | Shows built-in previous/next buttons when custom buttons are not provided. |
 | `renderPrevButton` | `(props) => ReactNode` | `undefined`    | Custom previous button renderer.                   |
 | `renderNextButton` | `(props) => ReactNode` | `undefined`    | Custom next button renderer.                       |
 
