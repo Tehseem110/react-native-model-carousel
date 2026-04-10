@@ -11576,9 +11576,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-3d-carousel-example@workspace:example":
+"react-native-3d-model-carousel-example@workspace:example":
   version: 0.0.0-use.local
-  resolution: "react-native-3d-carousel-example@workspace:example"
+  resolution: "react-native-3d-model-carousel-example@workspace:example"
   dependencies:
     "@expo/metro-runtime": "npm:~6.1.2"
     "@react-three/drei": "npm:^10.6.1"
@@ -11601,9 +11601,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"react-native-3d-carousel@workspace:.":
+"react-native-3d-model-carousel@workspace:.":
   version: 0.0.0-use.local
-  resolution: "react-native-3d-carousel@workspace:."
+  resolution: "react-native-3d-model-carousel@workspace:."
   dependencies:
     "@commitlint/config-conventional": "npm:^20.5.0"
     "@eslint/compat": "npm:^2.0.3"

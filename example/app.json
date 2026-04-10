@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "ModelCarousel Example",
-    "slug": "react-native-3d-carousel-example",
+    "slug": "react-native-3d-model-carousel-example",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

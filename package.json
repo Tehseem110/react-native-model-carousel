@@ -1,5 +1,5 @@
 {
-  "name": "react-native-3d-carousel",
+  "name": "react-native-3d-model-carousel",
   "version": "0.4.0",
   "description": "A React Native library for rendering interactive 3D GLB models in a smooth, customizable carousel powered by Three.js",
   "main": "./lib/module/index.js",
@@ -32,7 +32,7 @@
     "!**/.*"
   ],
   "scripts": {
-    "example": "yarn workspace react-native-3d-carousel-example",
+    "example": "yarn workspace react-native-3d-model-carousel-example",
     "clean": "del-cli lib",
     "prepare": "bob build",
     "typecheck": "tsc",
@@ -47,14 +47,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Tehseem110/react-native-3d-carousel.git"
+    "url": "git+https://github.com/Tehseem110/react-native-3d-model-carousel.git"
   },
   "author": "Tehseem <tehseem010@gmail.com> (https://github.com/Tehseem110)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Tehseem110/react-native-3d-carousel/issues"
+    "url": "https://github.com/Tehseem110/react-native-3d-model-carousel/issues"
   },
-  "homepage": "https://github.com/Tehseem110/react-native-3d-carousel#readme",
+  "homepage": "https://github.com/Tehseem110/react-native-3d-model-carousel#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
