@@ -1,6 +1,6 @@
 {
   "name": "react-native-3d-model-carousel",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "description": "A React Native library for rendering interactive 3D GLB models in a smooth, customizable carousel powered by Three.js",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
