@@ -7,7 +7,12 @@ A React Native library for rendering interactive 3D `.glb`/`.gltf` models in a s
 <p align="center">
   <img
     src="./example/assets/Preview%20GIF/PreviewGif.gif"
-    alt="Carousel Preview GIF"
+    alt="Carousel Preview GIF 1"
+    width="250"
+  />
+  <img
+    src="./example/assets/Preview%20GIF/PreviewGif2.gif"
+    alt="Carousel Preview GIF 2"
     width="250"
   />
 </p>
